@@ -1,0 +1,19 @@
+{
+  "name": "ediblesites",
+  "owner": {
+    "name": "Edible Sites"
+  },
+  "metadata": {
+    "description": "Claude Code plugins for content management and publishing workflows",
+    "pluginRoot": "./plugins"
+  },
+  "plugins": [
+    {
+      "name": "wp-local-first",
+      "source": "./plugins/wp-local-first",
+      "description": "Local-first WordPress content management. Markdown + frontmatter as source of truth, one-way push to WordPress via REST API with postId writeback.",
+      "version": "1.0.0",
+      "keywords": ["wordpress", "markdown", "content", "publishing", "local-first"]
+    }
+  ]
+}
