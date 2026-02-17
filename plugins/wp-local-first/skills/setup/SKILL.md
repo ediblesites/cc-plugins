@@ -48,32 +48,30 @@ Required fields for the local-first WordPress pattern:
 ---
 slug: example-article
 title: Example Article Title
-metaDescription: A short description for SEO and excerpts
-postId: null
-publishedUrl: null
+excerpt: A short description for SEO and excerpts
 status: draft
 createdAt: 2026-01-01T00:00:00Z
-lastModified: 2026-01-01T00:00:00Z
 ---
 
 ## Field reference
 
-| Field           | Source         | Description                                  |
-| --------------- | -------------- | -------------------------------------------- |
-| slug            | directory name | URL-safe identifier, matches directory name  |
-| title           | manual         | Article title                                |
-| metaDescription | manual         | SEO meta description, used as WP excerpt     |
-| postId          | publish script | WordPress post ID, null until first publish  |
-| publishedUrl    | publish script | Full URL on the live site, set after publish |
-| status          | manual         | Content lifecycle state (draft, publish)     |
-| createdAt       | scaffold       | ISO 8601 creation timestamp                  |
-| lastModified    | publish script | ISO 8601 last modification timestamp         |
+| Field     | Source   | Description                                 |
+| --------- | -------- | ------------------------------------------- |
+| slug      | scaffold | URL-safe identifier, matches directory name |
+| title     | manual   | Article title                               |
+| excerpt   | manual   | SEO meta description, used as WP excerpt    |
+| id        | publish  | WordPress post ID, absent until published   |
+| status    | manual   | Content lifecycle state (draft, publish)    |
+| createdAt | scaffold | ISO 8601 creation timestamp                 |
 
-Add project-specific fields below the required ones (e.g. category, tags, keywords).
+The `id` field is written into frontmatter by the publish skill after wp-post returns a successful response.
+
+Add project-specific fields below the required ones (e.g. categories, tags, featured_image).
 ```
 
 ### 5. Report
 
 Print a summary of what was created and remind the user to:
 1. Fill in `config/wordpress.json` with their WordPress credentials
-2. Add project-specific fields to the frontmatter schema
+2. Ensure `wp-post` CLI is installed (from the wp-poster package)
+3. Add project-specific fields to the frontmatter schema

@@ -1,12 +1,12 @@
 ---
 name: publish
-description: Publish an article from content/<slug>/ to WordPress via REST API. Uploads images, creates or updates the post, writes postId back to frontmatter.
-allowed-tools: Bash(python3:*) Bash(python:*)
+description: Publish an article from content/<slug>/ to WordPress using wp-post. Parses JSON output and writes id back to frontmatter.
+allowed-tools: Bash(wp-post:*) Read Edit
 ---
 
 # Publish Article
 
-Push a local article to WordPress.
+Push a local article to WordPress using the `wp-post` CLI.
 
 ## Input
 
@@ -16,25 +16,44 @@ Push a local article to WordPress.
 
 `$ARGUMENTS` is the article slug (directory name under `content/`).
 
-## Execution
+## Steps
 
-Run the publish script:
+### 1. Validate
+
+- Read `content/<slug>/index.md` and confirm it exists with valid frontmatter.
+- If missing, tell the user to run `/wp-local-first:scaffold <title>`.
+
+### 2. Publish via wp-post
+
+Run:
 
 ```bash
-python3 <plugin-dir>/skills/publish/scripts/publish.py --content-dir content --config config/wordpress.json $ARGUMENTS
+wp-post content/<slug>/index.md --markdown
 ```
 
-Where `<plugin-dir>` is the directory containing this skill (resolve relative to this SKILL.md file's location, two levels up).
+`wp-post` handles image uploads, markdown-to-HTML conversion, and post creation/update via the WordPress REST API.
 
-The script:
-1. Parses `content/<slug>/index.md` (frontmatter + body)
-2. Uploads featured image and body images to WP media library (dedup by filename + size check)
-3. Converts markdown to HTML
-4. Creates post (if `postId` is null) or updates existing post via WP REST API
-5. Writes `postId`, `publishedUrl`, and `lastModified` back into the frontmatter
+It outputs JSON on success:
+
+```json
+{"success": true, "id": 123, "title": "...", "url": "..."}
+```
+
+### 3. Update frontmatter (post-publish loop)
+
+Parse the JSON output from `wp-post`:
+
+1. Write `id` into the frontmatter (this is the WordPress post ID).
+2. If the `slug` in the frontmatter differs from the slug WordPress resolved (check the returned `url`), update `slug` to match.
+
+Use the `Edit` tool to update the frontmatter fields in `content/<slug>/index.md`.
+
+### 4. Report
+
+Tell the user the result: created vs updated, post ID, and live URL.
 
 ## Error handling
 
-- Missing `config/wordpress.json`: tell the user to run `/wp-local-first:setup`
 - Missing article directory: tell the user to run `/wp-local-first:scaffold <title>`
-- WP API errors: the script prints the status code and response body
+- `wp-post` not found: tell the user to install `wp-poster` (`npm install -g wp-post` or equivalent)
+- `wp-post` errors: display the error output

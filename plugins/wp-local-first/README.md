@@ -13,7 +13,18 @@ content/<slug>/
   body-1.webp       # body images (optional)
 ```
 
-The frontmatter carries `postId` (null until first publish) and `publishedUrl`. When you publish, the script pushes content + images to WordPress via REST API and writes the post ID back into the frontmatter. Subsequent publishes update rather than duplicate.
+The frontmatter carries `id` (the WordPress post ID, absent until first publish). When you publish, `wp-post` pushes content + images to WordPress via REST API and the skill writes the post ID back into the frontmatter. Subsequent publishes update rather than duplicate.
+
+## Prerequisites
+
+- **`wp-post` CLI** from the [wp-poster](https://github.com/ediblesites/wp-poster) package — handles image uploads, markdown-to-HTML conversion, and WordPress REST API calls
+- **Python 3** with `pyyaml` — used by the rebuild-index skill
+
+Install Python dependency:
+
+```
+pip install pyyaml
+```
 
 ## Installation
 
@@ -23,25 +34,13 @@ claude --plugin-dir ./wp-local-first
 
 Or add to a plugin marketplace for team distribution.
 
-## Python dependencies
-
-The publish and rebuild-index scripts require:
-
-```
-pyyaml
-mistune
-requests
-```
-
-Install with `pip install pyyaml mistune requests`.
-
 ## Skills
 
 | Skill           | Description                                                    |
 | --------------- | -------------------------------------------------------------- |
 | `setup`         | Initialize project: content dir, WP config, gitignore, schema |
 | `scaffold`      | Create a new article directory from a title                    |
-| `publish`       | Push an article to WordPress (create or update)                |
+| `publish`       | Push an article to WordPress (create or update via wp-post)    |
 | `rebuild-index` | Scan all frontmatters into `_index.json` for querying          |
 
 ### setup
@@ -66,7 +65,7 @@ Creates `content/how-to-make-sourdough-bread/index.md` with frontmatter template
 /wp-local-first:publish my-article-slug
 ```
 
-Uploads images (deduped by filename + size check), converts markdown to HTML, creates or updates the WP post, and writes `postId` back to frontmatter.
+Runs `wp-post` to upload images, convert markdown to HTML, and create or update the WP post. Writes `id` back to frontmatter on success.
 
 ### rebuild-index
 
@@ -74,7 +73,7 @@ Uploads images (deduped by filename + size check), converts markdown to HTML, cr
 /wp-local-first:rebuild-index
 ```
 
-Scans all `content/*/index.md` frontmatters into `_index.json`. Optionally filter fields with `--fields slug,title,postId`.
+Scans all `content/*/index.md` frontmatters into `_index.json`. Optionally filter fields with `--fields slug,title,id`.
 
 ## WordPress requirements
 
@@ -84,7 +83,6 @@ Scans all `content/*/index.md` frontmatters into `_index.json`. Optionally filte
 
 ## Design decisions
 
-- **No database**: frontmatter is the state. `postId` writeback eliminates mapping tables.
+- **No database**: frontmatter is the state. `id` writeback eliminates mapping tables.
+- **wp-post as engine**: all WordPress interaction (image uploads, HTML conversion, REST API calls) is delegated to `wp-post`, avoiding duplicated logic.
 - **Slug-prefixed image filenames**: avoids collisions when multiple articles have `featured.webp`.
-- **Size-check dedup**: if a local image changes, the stale WP copy is deleted and re-uploaded.
-- **Atomic writes**: frontmatter writeback uses tmp file + rename to prevent corruption.

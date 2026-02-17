@@ -37,12 +37,9 @@ Write `content/<slug>/index.md` with frontmatter:
 ---
 slug: <generated-slug>
 title: <title from arguments>
-metaDescription: ""
-postId: null
-publishedUrl: null
+excerpt: ""
 status: draft
 createdAt: <current UTC ISO 8601>
-lastModified: <current UTC ISO 8601>
 ---
 
 ```

@@ -11,9 +11,10 @@
     {
       "name": "wp-local-first",
       "source": "./plugins/wp-local-first",
-      "description": "Local-first WordPress content management. Markdown + frontmatter as source of truth, one-way push to WordPress via REST API with postId writeback.",
-      "version": "1.0.0",
-      "keywords": ["wordpress", "markdown", "content", "publishing", "local-first"]
+      "description": "Local-first WordPress content management. Markdown + frontmatter as source of truth, one-way push to WordPress via wp-post CLI.",
+      "version": "1.1.0",
+      "keywords": ["wordpress", "markdown", "content", "publishing", "local-first"],
+      "dependencies": ["wp-poster"]
     },
     {
       "name": "wp-poster",

@@ -18,7 +18,7 @@ python3 <plugin-dir>/skills/rebuild-index/scripts/rebuild_index.py --content-dir
 
 Where `<plugin-dir>` is the directory containing this skill (resolve relative to this SKILL.md file's location, two levels up).
 
-Optional: pass `--fields slug,title,postId,status` to whitelist specific frontmatter fields. Without `--fields`, all frontmatter fields are included.
+Optional: pass `--fields slug,title,id,status` to whitelist specific frontmatter fields. Without `--fields`, all frontmatter fields are included.
 
 ## Output
 
@@ -27,7 +27,7 @@ Writes `_index.json` at the specified path:
 ```json
 {
   "articles": [
-    {"slug": "...", "title": "...", "postId": 123, "...": "..."}
+    {"slug": "...", "title": "...", "id": 123, "...": "..."}
   ],
   "rebuiltAt": "2026-01-01T00:00:00Z"
 }
