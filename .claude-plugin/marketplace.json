@@ -14,16 +14,6 @@
       "description": "Local-first WordPress content management. Markdown + frontmatter as source of truth, one-way push to WordPress via wp-post CLI.",
       "version": "1.1.0",
       "keywords": ["wordpress", "markdown", "content", "publishing", "local-first"]
-    },
-    {
-      "name": "wp-poster",
-      "source": {
-        "source": "github",
-        "repo": "ediblesites/wp-poster"
-      },
-      "description": "Publish and update WordPress posts via the wp-post CLI tool.",
-      "version": "1.1.0",
-      "keywords": ["wordpress", "publishing", "gutenberg", "cli"]
     }
   ]
 }
